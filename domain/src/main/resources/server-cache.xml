@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cache
+        xmlns="http://geode.apache.org/schema/cache"
+        xmlns:gpdb="http://schema.pivotal.io/gemfire/gpdb"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://geode.apache.org/schema/cache http://geode.apache.org/schema/cache/cache-1.0.xsd
+                        http://schema.pivotal.io/gemfire/gpdb http://schema.pivotal.io/gemfire/gpdb/gpdb-2.2.xsd"
+        version="1.0">
+
+    <pdx read-serialized="true" persistent="false">
+        <pdx-serializer>
+            <class-name>org.apache.geode.pdx.ReflectionBasedAutoSerializer</class-name>
+            <parameter name="classes">
+                <string>io.pivotal.demo.entity.*</string>
+            </parameter>
+        </pdx-serializer>
+    </pdx>
+
+    <jndi-bindings>
+        <jndi-binding jndi-name="datasource" type="SimpleDataSource"
+                      jdbc-driver-class="org.postgresql.Driver" user-name="gpadmin"
+                      password="pivotal" connection-url="jdbc:postgresql://172.16.139.146:5432/gpadmin">
+        </jndi-binding>
+    </jndi-bindings>
+    <region name="Parent">
+        <region-attributes refid="PARTITION">
+            <partition-attributes redundant-copies="1" />
+        </region-attributes>
+        <gpdb:store datasource="datasource">
+            <gpdb:types>
+                <gpdb:pdx name="io.pivotal.demo.entity.Parent"
+                          table="parent">
+                    <gpdb:id field="id" />
+                    <gpdb:fields>
+                        <gpdb:field name="id" column="id" />
+                        <gpdb:field name="name" />
+                        <gpdb:field name="income" class="java.math.BigDecimal" />
+                    </gpdb:fields>
+                </gpdb:pdx>
+            </gpdb:types>
+        </gpdb:store>
+    </region>
+    <region name="Child">
+        <region-attributes refid="PARTITION">
+            <partition-attributes redundant-copies="1"
+                                  colocated-with="Parent">
+
+            </partition-attributes>
+        </region-attributes>
+        <gpdb:store datasource="datasource">
+            <gpdb:types>
+                <gpdb:pdx name="io.pivotal.demo.entity.Child"
+                          table="child">
+                    <gpdb:id>
+                        <gpdb:field ref="parentId" />
+                        <gpdb:field ref="id" />
+                    </gpdb:id>
+                    <gpdb:fields>
+                        <gpdb:field name="parentId" column="parent_id" />
+                        <gpdb:field name="id" />
+                        <gpdb:field name="name" />
+                        <gpdb:field name="age" class="java.lang.Integer" />
+                    </gpdb:fields>
+                </gpdb:pdx>
+            </gpdb:types>
+        </gpdb:store>
+    </region>
+    <region name="MappedChild">
+        <region-attributes refid="PARTITION">
+            <partition-attributes redundant-copies="1"
+                                  colocated-with="Parent">
+
+            </partition-attributes>
+        </region-attributes>
+        <gpdb:store datasource="datasource">
+            <gpdb:types>
+                <gpdb:pdx name="io.pivotal.demo.entity.Child"
+                          table="mapped_child">
+                    <gpdb:id>
+                        <gpdb:field ref="parentId" />
+                        <gpdb:field ref="id" />
+                    </gpdb:id>
+                    <gpdb:fields>
+                        <gpdb:field name="parentId" column="parent_id" />
+                        <gpdb:field name="id" />
+                        <gpdb:field name="name" />
+                        <gpdb:field name="age" class="java.lang.Integer" />
+                    </gpdb:fields>
+                </gpdb:pdx>
+            </gpdb:types>
+        </gpdb:store>
+    </region>
+    <region name="OrphanChild">
+        <region-attributes refid="PARTITION">
+            <partition-attributes redundant-copies="1"
+                                  colocated-with="Parent">
+            </partition-attributes>
+        </region-attributes>
+        <gpdb:store datasource="datasource">
+            <gpdb:types>
+                <gpdb:pdx name="io.pivotal.demo.entity.Child"
+                          table="orphan_child">
+                    <gpdb:id>
+                        <gpdb:field ref="parentId" />
+                        <gpdb:field ref="id" />
+                    </gpdb:id>
+                    <gpdb:fields>
+                        <gpdb:field name="parentId" column="parent_id" />
+                        <gpdb:field name="id" />
+                        <gpdb:field name="name" />
+                        <gpdb:field name="age" class="java.lang.Integer" />
+                    </gpdb:fields>
+                </gpdb:pdx>
+            </gpdb:types>
+        </gpdb:store>
+    </region>
+    <gpdb:gpfdist port="8000" />
+</cache>
