@@ -1,14 +1,12 @@
 package io.pivotal.demo.entity;
 
-import java.math.BigDecimal;
-
 public class Customer {
 
     private String id;
     private String name;
-    private BigDecimal income;
+    private Integer income;
 
-    public BigDecimal getIncome() {
+    public Integer getIncome() {
         return income;
     }
 
@@ -16,7 +14,7 @@ public class Customer {
         return name;
     }
 
-    public void setIncome(BigDecimal income) {
+    public void setIncome(Integer income) {
         this.income = income;
     }
 
