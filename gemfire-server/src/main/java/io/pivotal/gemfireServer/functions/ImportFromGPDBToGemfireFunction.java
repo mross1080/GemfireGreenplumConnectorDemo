@@ -14,7 +14,6 @@ import org.apache.geode.cache.execute.RegionFunctionContext;
 
 import java.util.Properties;
 
-import static io.pivotal.gemfire.gpdb.service.GpdbService.createOperation;
 
   /**
  * Pivotal Data Engineering
@@ -41,7 +40,19 @@ public class ImportFromGPDBToGemfireFunction extends FunctionAdapter
 
 
       Region<?,?> region = cache.getRegion("Customer");
+
+
+
       long numberOfResults = GpdbService.createOperation(region).importRegion();
+
+
+
+
+
+
+
+
+
       String result = "Successfully imported this many records : " + numberOfResults;
       logger.info(result);
       context.getResultSender().lastResult(result);

@@ -40,6 +40,7 @@ public class ImportFromGemfireToGPDBFunction extends FunctionAdapter
 
       Region<?,?> region = cache.getRegion("Customer");
       long numberOfResults = GpdbService.createOperation(region).exportRegion();
+
       String result = "Successfully imported this many records : " + numberOfResults;
       logger.info(result);
       context.getResultSender().lastResult(result);

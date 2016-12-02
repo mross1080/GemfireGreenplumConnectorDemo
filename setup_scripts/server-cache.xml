@@ -42,5 +42,5 @@
     </region>
 
 
-    <gpdb:gpfdist port="8001" />
+    <gpdb:gpfdist port="8003" />
 </cache>

@@ -6,17 +6,11 @@ import com.gemstone.gemfire.cache.client.ClientCacheFactory;
 import com.gemstone.gemfire.cache.execute.FunctionService;
 import com.gemstone.gemfire.cache.execute.ResultCollector;
 import io.pivotal.demo.entity.Customer;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.SpringBootConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ImportResource;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -43,7 +37,7 @@ public class GemfireClientApplicationTests {
         String sql = "drop table if exists customer;create table customer ( "
                 + 	" id	text,"
                 +	" name text,"
-                + " income	bigint"
+                + " income	int"
                 +	");";
 
 
@@ -62,6 +56,8 @@ public class GemfireClientApplicationTests {
 
         executeImportFromGPDBToGemfire();
         assertNotNull(region.containsKey("19"));
+
+
 
 
     }
@@ -87,13 +83,14 @@ public class GemfireClientApplicationTests {
         assertEquals(1,executeQuerySQL(sql));
 
 
-//
-//        executeSQL(sql);
-//
-//        assertTrue(!region.containsKey("19"));
-//
-//        executeImportFromGPDBToGemfire();
-//        assertNotNull(region.containsKey("19"));
+    }
+
+
+    @After
+    public static void tearDown() {
+
+//        Region<?,?> customers = cache.getRegion("Customer");
+//        customers.clear();
 
 
     }
@@ -116,7 +113,7 @@ public class GemfireClientApplicationTests {
 
             while ( rs.next() ) {
                 resultsCount++;
-                int id = rs.getInt("id");
+                String id = rs.getString("id");
                 String  name = rs.getString("name");
                 int income = rs.getInt ("income");
                 System.out.println( "ID = " + id );
@@ -128,11 +125,12 @@ public class GemfireClientApplicationTests {
             rs.close();
             stmt.close();
             c.close();
+            System.out.println("query executed successfully");
+
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-            System.exit(0);
+            System.out.println("there was a problem");
         }
-        System.out.println("Table created successfully");
 
         return  resultsCount;
 
@@ -187,11 +185,12 @@ public class GemfireClientApplicationTests {
             stmt.executeUpdate(sql);
             stmt.close();
             c.close();
+            System.out.println("update successfully");
+
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-            System.exit(0);
+            System.out.println("there was a problem");
         }
-        System.out.println("Table created successfully");
     }
 
 }
